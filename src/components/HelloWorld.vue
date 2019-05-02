@@ -12,6 +12,13 @@
 import vis from 'vis'
 import * as utils from './utils.js'
 
+var urlHumanU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/humanA.png'
+var urlHumanS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/humanB.png'
+var urlAgentU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/somethingA.png'
+var urlAgentS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/somethingB.png'
+var urlIntermediaryU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/something2A.png'
+var urlIntermediaryS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/something2B.png'
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -57,10 +64,7 @@ export default {
     },
     create_node () {
       var nNode = utils.makeNode(this.nextNodeId())
-      // var url = 'https://cdn4.iconfinder.com/data/icons/line-icons-12/64/software_shape_rectangle-512.png'
-      var url1 = '../assets/humanB.png'
-      var url2 = '../assets/humanA.png'
-      nNode.image = { unselected: url1, selected: url2 }
+      nNode.image = { unselected: urlHumanU, selected: urlHumanS }
       this.nodes.push(nNode)
       this.network.setData({ nodes: this.nodes, edges: this.edges })
     },
