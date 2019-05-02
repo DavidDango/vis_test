@@ -1,6 +1,7 @@
 <template>
   <div>
     <button type="button" @click="toggle_physics"> Turn off physics </button>
+    <button type="button" @click="create_node"> Create a node </button>
     <div id="outer">
       <div id="mynetwork"></div>
     </div>
@@ -9,6 +10,7 @@
 
 <script>
 import vis from 'vis'
+import * as utils from './utils.js'
 
 export default {
   name: 'HelloWorld',
@@ -17,27 +19,8 @@ export default {
   },
   data () {
     return {
-      nodes: [
-        { id: 0, label: '0', x: -147, y: -77 },
-        { id: 1, label: '1', x: -186, y: 88 },
-        { id: 2, label: '2', x: 8, y: 160 },
-        { id: 3, label: '3', x: 159, y: 28 },
-        { id: 4, label: '4', x: 45, y: -111 }
-      ],
-      edges: [
-        { from: 0, to: 1 },
-        { from: 0, to: 1 },
-        { from: 0, to: 2 },
-        { from: 0, to: 3 },
-        { from: 0, to: 4 },
-        { from: 0, to: 4 },
-        { from: 1, to: 2 },
-        { from: 1, to: 3 },
-        { from: 1, to: 3 },
-        { from: 2, to: 3 },
-        { from: 2, to: 4 },
-        { from: 3, to: 4 }
-      ],
+      nodes: [],
+      edges: [],
       options: {
         manipulation: {
           enabled: true,
@@ -49,7 +32,8 @@ export default {
         nodes: {}
       },
       container: '',
-      network: null
+      network: null,
+      current_node_id: 0
     }
   },
   computed: {
@@ -63,11 +47,24 @@ export default {
   mounted () {
     this.container = document.getElementById('mynetwork')
     this.network = new vis.Network(this.container, this.graph_data, this.options)
+    this.options.nodes = { shape: 'image' }
+    this.network.setOptions(this.options)
   },
   methods: {
     toggle_physics () {
       this.options.nodes.physics = false
       this.network.setOptions(this.options)
+    },
+    create_node () {
+      var nNode = utils.makeNode(this.nextNodeId())
+      var url = 'https://cdn4.iconfinder.com/data/icons/line-icons-12/64/software_shape_rectangle-512.png'
+      nNode.image = { unselected: url, selected: url }
+      this.nodes.push(nNode)
+      this.network.setData({ nodes: this.nodes, edges: this.edges })
+    },
+    nextNodeId () {
+      this.current_node_id++
+      return this.current_node_id
     }
   }
 }
