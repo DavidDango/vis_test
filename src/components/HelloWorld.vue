@@ -57,8 +57,10 @@ export default {
     },
     create_node () {
       var nNode = utils.makeNode(this.nextNodeId())
-      var url = 'https://cdn4.iconfinder.com/data/icons/line-icons-12/64/software_shape_rectangle-512.png'
-      nNode.image = { unselected: url, selected: url }
+      // var url = 'https://cdn4.iconfinder.com/data/icons/line-icons-12/64/software_shape_rectangle-512.png'
+      var url1 = '../assets/humanB.png'
+      var url2 = '../assets/humanA.png'
+      nNode.image = { unselected: url1, selected: url2 }
       this.nodes.push(nNode)
       this.network.setData({ nodes: this.nodes, edges: this.edges })
     },
