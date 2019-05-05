@@ -2,6 +2,7 @@
   <div>
     <button type="button" @click="toggle_physics"> Turn off physics </button>
     <button type="button" @click="create_node"> Create a node </button>
+    <button type="button" @click="add_edge"> Make edge </button>
     <div id="outer">
       <div id="mynetwork"></div>
     </div>
@@ -19,6 +20,19 @@ var urlAgentS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/sr
 var urlIntermediaryU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/something2A.png'
 var urlIntermediaryS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/something2B.png'
 
+var options = {
+  manipulation: {
+    enabled: true,
+    initiallyActive: true,
+    addEdge: function (edgeData, callback) {
+      callback(edgeData)
+    }
+  },
+  nodes: {}
+}
+
+var network = null
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -28,18 +42,7 @@ export default {
     return {
       nodes: [],
       edges: [],
-      options: {
-        manipulation: {
-          enabled: true,
-          initiallyActive: true,
-          addEdge: function (edgeData, callback) {
-            callback(edgeData)
-          }
-        },
-        nodes: {}
-      },
       container: '',
-      network: null,
       current_node_id: 0
     }
   },
@@ -53,24 +56,27 @@ export default {
   },
   mounted () {
     this.container = document.getElementById('mynetwork')
-    this.network = new vis.Network(this.container, this.graph_data, this.options)
-    this.options.nodes = { shape: 'image' }
-    this.network.setOptions(this.options)
+    network = new vis.Network(this.container, this.graph_data, options)
+    options.nodes = { shape: 'image' }
+    network.setOptions(options)
   },
   methods: {
     toggle_physics () {
-      this.options.nodes.physics = false
-      this.network.setOptions(this.options)
+      options.nodes.physics = false
+      network.setOptions(options)
     },
     create_node () {
       var nNode = utils.makeNode(this.nextNodeId())
       nNode.image = { unselected: urlHumanU, selected: urlHumanS }
       this.nodes.push(nNode)
-      this.network.setData({ nodes: this.nodes, edges: this.edges })
+      network.setData({ nodes: this.nodes, edges: this.edges })
     },
     nextNodeId () {
       this.current_node_id++
       return this.current_node_id
+    },
+    add_edge () {
+      network.addEdgeMode()
     }
   }
 }
