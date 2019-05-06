@@ -13,25 +13,22 @@
 import vis from 'vis'
 import * as utils from './utils.js'
 
-var urlHumanU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/humanA.png'
-var urlHumanS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/humanB.png'
-var urlAgentU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/somethingA.png'
-var urlAgentS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/somethingB.png'
-var urlIntermediaryU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/something2A.png'
-var urlIntermediaryS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/something2B.png'
+let urlHumanU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/humanA.png'
+let urlHumanS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/humanB.png'
+let urlAgentU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/somethingA.png'
+let urlAgentS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/somethingB.png'
+let urlIntermediaryU = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/something2A.png'
+let urlIntermediaryS = 'https://raw.githubusercontent.com/DavidDango/vis_test/master/src/assets/something2B.png'
 
-var options = {
+let options = {
   manipulation: {
     enabled: true,
-    initiallyActive: true,
-    addEdge: function (edgeData, callback) {
-      callback(edgeData)
-    }
+    initiallyActive: true
   },
   nodes: {}
 }
 
-var network = null
+let network = null
 
 export default {
   name: 'HelloWorld',
@@ -56,6 +53,8 @@ export default {
   },
   mounted () {
     this.container = document.getElementById('mynetwork')
+    let tempData = this
+    options.manipulation['addEdge'] = function (edgeData, callback) { utils.checkEdges(tempData, edgeData, network) }
     network = new vis.Network(this.container, this.graph_data, options)
     options.nodes = { shape: 'image' }
     network.setOptions(options)
@@ -66,8 +65,19 @@ export default {
       network.setOptions(options)
     },
     create_node () {
-      var nNode = utils.makeNode(this.nextNodeId())
+      let nNode = utils.makeNode(this.nextNodeId())
       nNode.image = { unselected: urlHumanU, selected: urlHumanS }
+      let nodes = []
+      for (let i of this.nodes) {
+        if (i.id !== null) {
+          nodes.push(i.id)
+        }
+      }
+      let temp = network.getPositions(nodes)
+      for (let i = 0; i < this.nodes.length; i++) {
+        this.nodes[i].x = temp[this.nodes[i].id].x
+        this.nodes[i].y = temp[this.nodes[i].id].y
+      }
       this.nodes.push(nNode)
       network.setData({ nodes: this.nodes, edges: this.edges })
     },
